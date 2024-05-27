@@ -20,3 +20,30 @@ kubectl apply -f .\sample-app.yml -n app-nginx
 ```
 
 Access sample nginx app on `http://app-nginx.local-com:8080`
+
+
+## ArgoCD setup
+
+Add Argo Helm repo
+```bash
+helm repo add argo https://argoproj.github.io/argo-helm
+
+helm repo update
+```
+Install ArgoCD
+```bash
+helm install argocd argo/argo-cd -f .\ArgoCD\argocd-values.yml --namespace argocd --create-namespace
+```
+
+Get ArgoCD password:
+```bash
+kubectl -n argocd get secret argocd-initial-admin-secret -o jsonpath="{.data.password}" | base64 -d
+```
+
+Add new DNS to `hosts` file and access ArgoCD over HTTP
+```txt
+127.0.0.1 argocd.local-com 
+```
+
+`http://argocd.local-com`
+
