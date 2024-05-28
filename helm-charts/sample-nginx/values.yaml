@@ -1,0 +1,2 @@
+ingress:
+  host: app-nginx.local-com
