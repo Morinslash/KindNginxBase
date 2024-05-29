@@ -2,7 +2,7 @@
 
 Run cluster
 ```bash
-kind create cluster --config .\cluster-config.yml
+kind create cluster --config .kind-config/cluster-config.yml
 ```
 
 Install Nginx Ingress in the Cluster
@@ -32,7 +32,7 @@ helm repo update
 ```
 Install ArgoCD
 ```bash
-helm install argocd argo/argo-cd -f .\ArgoCD\argocd-values.yml --namespace argocd --create-namespace
+helm install argocd argo/argo-cd -f .\argo-cd\argocd-values.yml --namespace argocd --create-namespace
 ```
 
 Get ArgoCD password:
@@ -47,3 +47,22 @@ Add new DNS to `hosts` file and access ArgoCD over HTTP
 
 `http://argocd.local-com`
 
+## Example setup of the application
+```yaml
+project: default
+destination:
+  server: 'https://kubernetes.default.svc'
+  namespace: sample-nginx
+syncPolicy:
+  syncOptions:
+    - CreateNamespace=true
+sources:
+  - repoURL: 'https://github.com/Morinslash/KindNginxBase'
+    path: helm-charts/sample-nginx
+    targetRevision: HEAD
+    helm:
+      valueFiles:
+        - $values/remote-values.yml
+  - repoURL: 'https://github.com/Morinslash/sample-nginx-config-kind'
+    ref: values
+```
